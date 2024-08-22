@@ -15,7 +15,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
-      <body className={cn("min-h-screen bg-background font-sans antialiased", fontSans.variable)}>
+      <body
+        className={cn("h-dvh bg-background font-sans antialiased flex flex-col", fontSans.variable)}
+      >
         <Menu />
         {children}
       </body>

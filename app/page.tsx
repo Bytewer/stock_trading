@@ -4,7 +4,7 @@ import { ResolutionString } from "@/public/charting_library/charting_library";
 
 export default function Home() {
   return (
-    <div className="h-dvh">
+    <div className="flex-1 ">
       <TVChartContainer
         symbol="6000"
         library_path="/charting_library/"
