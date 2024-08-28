@@ -18,6 +18,7 @@ const createWindow = () => {
     webPreferences: {
       preload: join(__dirname, "preload.js"),
       nodeIntegration: true,
+      devTools: true, // 确保开启开发者工具
     },
   });
 
@@ -39,7 +40,7 @@ const createWindow = () => {
 
   loadURL();
   mainWindow.webContents.openDevTools();
-
+  mainWindow.reload();
   return mainWindow;
 };
 
