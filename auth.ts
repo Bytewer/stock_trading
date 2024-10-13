@@ -1,52 +1,49 @@
 import NextAuth from "next-auth";
-import { ZodError } from "zod";
+import GitHub from "next-auth/providers/github";
 import Credentials from "next-auth/providers/credentials";
-import { signInSchema } from "./lib/zod";
-// Your own logic for dealing with plaintext password strings; be careful!
-// import { saltAndHashPassword } from "@/utils/password";
-// import { getUserFromDb } from "@/utils/db";
+import type { Provider } from "next-auth/providers";
 
-export const { handlers, signIn, auth } = NextAuth({
-  providers: [
-    Credentials({
-      // You can specify which fields should be submitted, by adding keys to the `credentials` object.
-      // e.g. domain, username, password, 2FA token, etc.
-      credentials: {
-        email: {},
-        password: {},
-      },
-      authorize: async (credentials) => {
-        try {
-          let user = null;
+const providers: Provider[] = [
+  Credentials({
+    credentials: {
+      email: { label: "email" },
+      password: { label: "Password", type: "password" },
+    },
+    authorize(c) {
+      console.log(c);
+      if (c.password !== "password") return null;
+      return {
+        id: "test",
+        name: "Test User",
+        email: "test@example.com",
+      };
+    },
+  }),
+  GitHub,
+];
 
-          const { email, password } = await signInSchema.parseAsync(credentials);
+export const providerMap = providers
+  .map((provider) => {
+    if (typeof provider === "function") {
+      const providerData = provider();
+      return { id: providerData.id, name: providerData.name };
+    } else {
+      return { id: provider.id, name: provider.name };
+    }
+  })
+  .filter((provider) => provider.id !== "credentials");
 
-          // logic to salt and hash password
-          //   const pwHash = saltAndHashPassword(password);
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  providers,
+  pages: {
+    signIn: "/signin",
+    error: "/error",
+  },
 
-          // logic to verify if the user exists
-          //   user = await getUserFromDb(email, pwHash);
-          //           user = {
-          //               id?: string
-          //   name?: string | null
-          //   email?: string | null
-          //   image?: string | null
-          //           }
-          //   user = null;
-          user = { id: "we", name: "we", email: "asd@demo.com" };
-          if (!user) {
-            throw new Error("User not found.");
-          }
-
-          // return JSON object with the user data
-          return user;
-        } catch (error) {
-          if (error instanceof ZodError) {
-            // Return `null` to indicate that the credentials are invalid
-            return null;
-          }
-        }
-      },
-    }),
-  ],
+  callbacks: {
+    authorized: async ({ auth }) => {
+      // Logged in users are authenticated, otherwise redirect to login page
+      return !!auth;
+    },
+  },
 });
