@@ -27,6 +27,7 @@ const createWindow = () => {
 
   const loadURL = async () => {
     if (is.dev) {
+      // mainWindow.loadURL("http://localhost:30011?t=" + String(+new Date()));
       mainWindow.loadURL("http://localhost:30011");
     } else {
       try {

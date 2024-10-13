@@ -10,7 +10,6 @@ const providers: Provider[] = [
       password: { label: "Password", type: "password" },
     },
     authorize(c) {
-      console.log(c);
       if (c.password !== "password") return null;
       return {
         id: "test",
