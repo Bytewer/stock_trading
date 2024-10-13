@@ -29,7 +29,7 @@ export default async function SignInPage(props: {
           <input name="password" id="password" />
         </label>
 
-        <input name="redirectTo" id="redirectTo" value="/" />
+        <input name="redirectTo" id="redirectTo" defaultValue="/" />
         <input type="submit" value="Sign In" />
       </form>
       {/* {Object.values(providerMap).map((provider) => (
