@@ -19,6 +19,7 @@ const createWindow = () => {
       preload: join(__dirname, "preload.js"),
       nodeIntegration: true,
       devTools: true, // 确保开启开发者工具
+      partition: String(+new Date()), //去缓存
     },
   });
 
