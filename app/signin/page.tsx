@@ -92,25 +92,24 @@ export default async function SignInPage(props: {
       ))} */}
     </div>
   );
-
-  function signInFunction(): (formData: FormData) => Promise<void> {
-    return async (formData) => {
-      "use server";
-      // const userSchema = z.object({
-      //   email: z.string().email(),
-      //   password: z.string(),
-      // });
-      // const data = userSchema.parse(formData); // 使用 parse() 验证数据
-      // // 使用验证后的数据
-      // console.log(data);
-      try {
-        await signIn("credentials", formData);
-      } catch (error) {
-        if (error instanceof AuthError) {
-          return redirect(`/error?error=${error.type}`);
-        }
-        throw error;
+}
+function signInFunction(): (formData: FormData) => Promise<void> {
+  return async (formData) => {
+    "use server";
+    // const userSchema = z.object({
+    //   email: z.string().email(),
+    //   password: z.string(),
+    // });
+    // const data = userSchema.parse(formData); // 使用 parse() 验证数据
+    // // 使用验证后的数据
+    // console.log(data);
+    try {
+      await signIn("credentials", formData);
+    } catch (error) {
+      if (error instanceof AuthError) {
+        return redirect(`/error?error=${error.type}`);
       }
-    };
-  }
+      throw error;
+    }
+  };
 }
