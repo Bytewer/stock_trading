@@ -1,23 +1,15 @@
 import { CForm } from "@/components/custom/form";
+import { SignInFormData, signInSchema } from "@/lib/zod";
 import { z } from "zod";
 
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-});
-
-type FormData = z.infer<typeof formSchema>;
-
-async function fetchInitialData(): Promise<FormData> {
+async function fetchInitialData(): Promise<SignInFormData> {
   // 模拟从数据库获取初始数据
-  return { username: "" };
+  return { email: "", password: "", redirectTo: "/" };
 }
 
-export async function formAction(prevState: any, formData: FormData) {
+export async function formAction(prevState: any, formData: SignInFormData) {
   "use server";
-
-  const validatedData = formSchema.safeParse(formData);
+  const validatedData = signInSchema.safeParse(formData);
 
   if (!validatedData.success) {
     return { success: false, errors: validatedData.error.flatten().fieldErrors };

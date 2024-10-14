@@ -2,7 +2,6 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { useFormState, useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,25 +14,23 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { SignInFormData, signInSchema } from "@/lib/zod";
 
-export const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-});
-
-export type FormData = z.infer<typeof formSchema>;
-
-export type FormState = {
+export type SignInFormState = {
   success: boolean;
   errors?: {
-    username?: string[];
+    email?: string[];
+    redirectTo?: string[];
+    password?: string[];
     server?: string;
   };
-  data?: FormData;
+  data?: SignInFormData;
 };
 
-export type FormAction = (prevState: FormState, formData: FormData) => Promise<FormState>;
+export type FormAction = (
+  prevState: SignInFormState,
+  formData: SignInFormData
+) => Promise<SignInFormState>;
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -44,19 +41,19 @@ function SubmitButton() {
     </Button>
   );
 }
-type FormClientProps = {
-  initialData: FormData;
+type SignInProps = {
+  initialData: SignInFormData;
   formAction: FormAction;
 };
-export function CForm({ initialData, formAction }: FormClientProps) {
+export function CForm({ initialData, formAction }: SignInProps) {
   const [state, action] = useFormState(formAction, { success: false, errors: {} });
 
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<SignInFormData>({
+    resolver: zodResolver(signInSchema),
     defaultValues: initialData,
   });
 
-  const onSubmit = (values: FormData) => {
+  const onSubmit = (values: SignInFormData) => {
     action(values);
   };
 
@@ -65,15 +62,29 @@ export function CForm({ initialData, formAction }: FormClientProps) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
-          name="username"
+          name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>email</FormLabel>
               <FormControl>
                 <Input placeholder="shadcn" {...field} />
               </FormControl>
               <FormDescription>This is your public display name.</FormDescription>
-              <FormMessage>{state.errors?.username}</FormMessage>
+              <FormMessage>{state.errors?.email}</FormMessage>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>password</FormLabel>
+              <FormControl>
+                <Input placeholder="shadcn" {...field} />
+              </FormControl>
+              <FormDescription>This is your public display name.</FormDescription>
+              <FormMessage>{state.errors?.password}</FormMessage>
             </FormItem>
           )}
         />
