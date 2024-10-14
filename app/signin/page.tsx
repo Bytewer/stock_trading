@@ -23,12 +23,13 @@ export async function formAction(prevState: any, formData: SignInFormData) {
     console.log("Form submitted with:", validatedData.data);
     // 假设这里有一个异步操作，比如保存到数据库
     // await saveToDatabase(validatedData.data);
-    await signIn("credentials", validatedData.data);
-    return { success: true, data: validatedData.data };
+    const result = await signIn("credentials", validatedData.data);
+    console.log(result);
   } catch (error) {
     console.error("Error submitting form:", error);
     return { success: false, errors: { server: "An error occurred while submitting the form" } };
   }
+  // return { success: true, data: validatedData.data };
 }
 
 export async function ServerForm() {
