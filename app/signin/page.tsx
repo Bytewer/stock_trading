@@ -7,7 +7,7 @@ import { signInSchema } from "@/lib/zod";
 
 async function fetchInitialData(): Promise<SignInFormData> {
   // 模拟从数据库获取初始数据
-  return { email: "", password: "", redirectTo: "/" };
+  return { email: "q@q.com", password: "password", redirectTo: "/" };
 }
 
 export async function formAction(prevState: any, formData: SignInFormData) {
@@ -23,6 +23,7 @@ export async function formAction(prevState: any, formData: SignInFormData) {
     console.log("Form submitted with:", validatedData.data);
     // 假设这里有一个异步操作，比如保存到数据库
     // await saveToDatabase(validatedData.data);
+    await signIn("credentials", validatedData.data);
     return { success: true, data: validatedData.data };
   } catch (error) {
     console.error("Error submitting form:", error);
