@@ -6,6 +6,7 @@ import { SignInFormData } from "@/lib/types";
 import { signInSchema } from "@/lib/zod";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { z } from "zod";
 
 async function fetchInitialData(): Promise<SignInFormData> {
   // 模拟从数据库获取初始数据
@@ -38,7 +39,10 @@ export async function ServerForm() {
 
   return <SignInForm initialData={initialData} formAction={formAction} />;
 }
-
+const userSchema = z.object({
+  email: z.string().email(),
+  password: z.string(),
+});
 export default async function SignInPage(props: {
   searchParams: { callbackUrl: string | undefined };
 }) {
@@ -48,6 +52,13 @@ export default async function SignInPage(props: {
       <form
         action={async (formData) => {
           "use server";
+          // const userSchema = z.object({
+          //   email: z.string().email(),
+          //   password: z.string(),
+          // });
+          // const data = userSchema.parse(formData); // 使用 parse() 验证数据
+          // // 使用验证后的数据
+          // console.log(data);
           try {
             await signIn("credentials", formData);
           } catch (error) {
