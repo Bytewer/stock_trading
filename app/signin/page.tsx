@@ -1,7 +1,40 @@
 import { redirect } from "next/navigation";
 import { signIn, auth, providerMap } from "@/auth";
 import { AuthError } from "next-auth";
-import ServerForm from "../components/ServerForm";
+import { SignInForm } from "@/components/custom/signin-form";
+import { SignInFormData } from "@/lib/types";
+import { signInSchema } from "@/lib/zod";
+
+async function fetchInitialData(): Promise<SignInFormData> {
+  // 模拟从数据库获取初始数据
+  return { email: "", password: "", redirectTo: "/" };
+}
+
+export async function formAction(prevState: any, formData: SignInFormData) {
+  "use server";
+  const validatedData = signInSchema.safeParse(formData);
+
+  if (!validatedData.success) {
+    return { success: false, errors: validatedData.error.flatten().fieldErrors };
+  }
+
+  try {
+    // 在这里处理表单数据，例如保存到数据库
+    console.log("Form submitted with:", validatedData.data);
+    // 假设这里有一个异步操作，比如保存到数据库
+    // await saveToDatabase(validatedData.data);
+    return { success: true, data: validatedData.data };
+  } catch (error) {
+    console.error("Error submitting form:", error);
+    return { success: false, errors: { server: "An error occurred while submitting the form" } };
+  }
+}
+
+export async function ServerForm() {
+  const initialData = await fetchInitialData();
+
+  return <SignInForm initialData={initialData} formAction={formAction} />;
+}
 
 export default async function SignInPage(props: {
   searchParams: { callbackUrl: string | undefined };

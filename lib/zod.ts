@@ -10,5 +10,3 @@ export const signInSchema = object({
     .max(32, "Password must be less than 32 characters"),
   redirectTo: string(),
 });
-
-export type SignInFormData = z.infer<typeof signInSchema>;

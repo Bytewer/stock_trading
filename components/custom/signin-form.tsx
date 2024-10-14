@@ -14,23 +14,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { SignInFormData, signInSchema } from "@/lib/zod";
-
-export type SignInFormState = {
-  success: boolean;
-  errors?: {
-    email?: string[];
-    redirectTo?: string[];
-    password?: string[];
-    server?: string;
-  };
-  data?: SignInFormData;
-};
-
-export type FormAction = (
-  prevState: SignInFormState,
-  formData: SignInFormData
-) => Promise<SignInFormState>;
+import { SignInFormData, SignInProps } from "@/lib/types";
+import { signInSchema } from "@/lib/zod";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -41,11 +26,8 @@ function SubmitButton() {
     </Button>
   );
 }
-type SignInProps = {
-  initialData: SignInFormData;
-  formAction: FormAction;
-};
-export function CForm({ initialData, formAction }: SignInProps) {
+
+export function SignInForm({ initialData, formAction }: SignInProps) {
   const [state, action] = useFormState(formAction, { success: false, errors: {} });
 
   const form = useForm<SignInFormData>({
