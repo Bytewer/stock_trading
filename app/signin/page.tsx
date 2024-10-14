@@ -1,12 +1,14 @@
 import { redirect } from "next/navigation";
 import { signIn, auth, providerMap } from "@/auth";
 import { AuthError } from "next-auth";
+import ServerForm from "../components/ServerForm";
 
 export default async function SignInPage(props: {
   searchParams: { callbackUrl: string | undefined };
 }) {
   return (
     <div className="flex flex-col gap-2">
+      <ServerForm />
       <form
         action={async (formData) => {
           "use server";
