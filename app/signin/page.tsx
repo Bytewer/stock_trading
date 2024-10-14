@@ -7,6 +7,55 @@ import { signInSchema } from "@/lib/zod";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { z } from "zod";
+function signInFunction(): (formData: FormData) => Promise<void> {
+  return async (formData) => {
+    "use server";
+    // const userSchema = z.object({
+    //   email: z.string().email(),
+    //   password: z.string(),
+    // });
+    // const data = userSchema.parse(formData); // 使用 parse() 验证数据
+    // // 使用验证后的数据
+    // console.log(data);
+    try {
+      await signIn("credentials", formData);
+    } catch (error) {
+      if (error instanceof AuthError) {
+        return redirect(`/error?error=${error.type}`);
+      }
+      throw error;
+    }
+  };
+}
+
+async function onSubmit(formData: any) {
+  "use server";
+  try {
+    await signIn("credentials", formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return redirect(`/error?error=${error.type}`);
+    }
+    throw error;
+  }
+}
+
+export async function SignInP() {
+  return (
+    <form action={onSubmit} className="space-y-4">
+      <div>
+        <Label htmlFor="email">Email</Label>
+        <Input name="email" id="email" type="email" required />
+      </div>
+      <div>
+        <Label htmlFor="password">Password</Label>
+        <Input name="password" id="password" type="password" required />
+      </div>
+      <Input name="redirectTo" id="redirectTo" defaultValue="/" type="hidden" />
+      <Button type="submit">Sign In</Button>
+    </form>
+  );
+}
 
 async function fetchInitialData(): Promise<SignInFormData> {
   // 模拟从数据库获取初始数据
@@ -92,24 +141,4 @@ export default async function SignInPage(props: {
       ))} */}
     </div>
   );
-}
-function signInFunction(): (formData: FormData) => Promise<void> {
-  return async (formData) => {
-    "use server";
-    // const userSchema = z.object({
-    //   email: z.string().email(),
-    //   password: z.string(),
-    // });
-    // const data = userSchema.parse(formData); // 使用 parse() 验证数据
-    // // 使用验证后的数据
-    // console.log(data);
-    try {
-      await signIn("credentials", formData);
-    } catch (error) {
-      if (error instanceof AuthError) {
-        return redirect(`/error?error=${error.type}`);
-      }
-      throw error;
-    }
-  };
 }
