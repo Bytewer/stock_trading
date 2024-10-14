@@ -4,6 +4,8 @@ import { AuthError } from "next-auth";
 import { SignInForm } from "@/components/custom/signin-form";
 import { SignInFormData } from "@/lib/types";
 import { signInSchema } from "@/lib/zod";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 async function fetchInitialData(): Promise<SignInFormData> {
   // 模拟从数据库获取初始数据
@@ -24,12 +26,11 @@ export async function formAction(prevState: any, formData: SignInFormData) {
     // 假设这里有一个异步操作，比如保存到数据库
     // await saveToDatabase(validatedData.data);
     const result = await signIn("credentials", validatedData.data);
-    console.log(result);
+    return { success: true, data: validatedData.data };
   } catch (error) {
     console.error("Error submitting form:", error);
     return { success: false, errors: { server: "An error occurred while submitting the form" } };
   }
-  // return { success: true, data: validatedData.data };
 }
 
 export async function ServerForm() {
@@ -57,17 +58,17 @@ export default async function SignInPage(props: {
           }
         }}
       >
-        <label htmlFor="email">
+        <Label htmlFor="email">
           Email
-          <input name="email" id="email" />
-        </label>
-        <label htmlFor="password">
+          <Input name="email" id="email" />
+        </Label>
+        <Label htmlFor="password">
           Password
-          <input name="password" id="password" />
-        </label>
+          <Input name="password" id="password" />
+        </Label>
 
-        <input name="redirectTo" id="redirectTo" defaultValue="/" />
-        <input type="submit" value="Sign In" />
+        <Input name="redirectTo" id="redirectTo" defaultValue="/" />
+        <Input type="submit" value="Sign In" />
       </form>
       {/* {Object.values(providerMap).map((provider) => (
         <form
